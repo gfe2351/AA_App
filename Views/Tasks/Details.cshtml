@@ -1,0 +1,146 @@
+@model TaskPageModel
+@{
+    var def = Model.Def;
+    var cols = def.Columns;
+    ViewData["Title"] = "Задание " + def.Number;
+}
+<div class="jump">
+    <label>Задание:</label>
+    <select onchange="if (this.value) location.href = '/Tasks/Details/' + this.value">
+        @foreach (var t in TaskCatalog.All)
+        {
+            <option value="@t.Number" selected="@(t.Number == def.Number)">@t.Number. @t.Title</option>
+        }
+    </select>
+    @if (def.Number > 1) { <a class="btn small" asp-action="Details" asp-route-id="@(def.Number - 1)">← Назад</a> }
+    @if (def.Number < 30) { <a class="btn small" asp-action="Details" asp-route-id="@(def.Number + 1)">Вперёд →</a> }
+</div>
+
+<p class="section">@def.Section</p>
+<h1>Задание @def.Number. @def.Title</h1>
+<p class="desc">@def.Description</p>
+
+@if (cols.Length == 0)
+{
+    <div class="msg info">Это итоговое задание — готовое веб-приложение уже входит в проект.</div>
+    <p>
+        <a class="btn" asp-controller="Home" asp-action="College">Главная страница колледжа</a>
+        <a class="btn" asp-controller="Account" asp-action="Login">Авторизация</a>
+        <a class="btn" asp-controller="Student" asp-action="Index">Студенты</a>
+        <a class="btn" asp-controller="Teacher" asp-action="Index">Преподаватели</a>
+        <a class="btn" asp-controller="Group" asp-action="Index">Группы</a>
+        <a class="btn" asp-controller="Grade" asp-action="Index">Журнал оценок</a>
+        <a class="btn" asp-controller="Attendance" asp-action="Index">Посещаемость</a>
+        <a class="btn" asp-controller="Admin" asp-action="Index">Админ-панель</a>
+    </p>
+    <p>Тестовые аккаунты: <b>admin / admin123</b>, <b>teacher / teacher123</b>, <b>student / student123</b>.</p>
+}
+else
+{
+    <form asp-controller="Tasks" asp-action="Run" asp-route-id="@def.Number" method="post">
+        <h2>Входные данные</h2>
+        <div class="scroll">
+            <table class="grid input">
+                <thead>
+                <tr>
+                    @foreach (var c in cols) { <th>@c.Title</th> }
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="rows">
+                @foreach (var vals in Model.Rows)
+                {
+                    <tr>
+                        @for (var k = 0; k < cols.Length; k++)
+                        {
+                            var c = cols[k];
+                            var v = vals[k];
+                            <td>
+                                @if (c.Type == "select")
+                                {
+                                    <select name="@("c_" + c.Key)">
+                                        @foreach (var o in c.Options)
+                                        {
+                                            <option value="@o" selected="@(o == v)">@o</option>
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    <input name="@("c_" + c.Key)" type="@(c.Type == "number" ? "number" : c.Type == "date" ? "date" : "text")" value="@v" />
+                                }
+                            </td>
+                        }
+                        <td><button type="button" class="del" title="Удалить строку">×</button></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <button type="button" id="addRow" class="btn secondary">+ Добавить строку</button>
+            <button type="submit" class="btn">Выполнить</button>
+        </p>
+    </form>
+
+    <template id="rowTpl">
+        <tr>
+            @foreach (var c in cols)
+            {
+                <td>
+                    @if (c.Type == "select")
+                    {
+                        <select name="@("c_" + c.Key)">
+                            @foreach (var o in c.Options) { <option value="@o">@o</option> }
+                        </select>
+                    }
+                    else
+                    {
+                        <input name="@("c_" + c.Key)" type="@(c.Type == "number" ? "number" : c.Type == "date" ? "date" : "text")" />
+                    }
+                </td>
+            }
+            <td><button type="button" class="del" title="Удалить строку">×</button></td>
+        </tr>
+    </template>
+}
+
+@if (Model.Result != null)
+{
+    <section class="result">
+        <h2>Результат</h2>
+        @foreach (var b in Model.Result.Blocks)
+        {
+            if (b.Kind == "table")
+            {
+                <h3>@b.Text</h3>
+                <div class="scroll">
+                    <table class="grid">
+                        <thead><tr>@foreach (var h in b.Headers) { <th>@h</th> }</tr></thead>
+                        <tbody>
+                        @foreach (var row in b.Rows)
+                        {
+                            <tr>@foreach (var cell in row) { <td>@cell</td> }</tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="msg @b.Kind">@b.Text</div>
+            }
+        }
+    </section>
+}
+
+@if (Model.History.Count > 0)
+{
+    <h3>Последние запуски этого задания (SQLite)</h3>
+    <ul class="hist">
+        @foreach (var h in Model.History)
+        {
+            <li><small>@h.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</small> — строк: @h.RowsCount</li>
+        }
+    </ul>
+}

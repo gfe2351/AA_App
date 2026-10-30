@@ -1,0 +1,51 @@
+@{
+    var auth = User.Identity != null && User.Identity.IsAuthenticated;
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — AA_App</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+<header class="top">
+    <a class="brand" asp-controller="Home" asp-action="Index">AA_App</a>
+    <nav>
+        <a asp-controller="Home" asp-action="Index">Задания</a>
+        <a asp-controller="Home" asp-action="College">Колледж</a>
+        @if (auth)
+        {
+            <a asp-controller="Student" asp-action="Index">Студенты</a>
+            <a asp-controller="Teacher" asp-action="Index">Преподаватели</a>
+            <a asp-controller="Group" asp-action="Index">Группы</a>
+            <a asp-controller="Grade" asp-action="Index">Журнал</a>
+            <a asp-controller="Attendance" asp-action="Index">Посещаемость</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="Index">Админ-панель</a>
+            }
+        }
+        <a asp-controller="Home" asp-action="History">История запусков</a>
+    </nav>
+    <div class="user">
+        @if (auth)
+        {
+            <span>@User.Identity.Name</span>
+            <form asp-controller="Account" asp-action="Logout" method="post"><button class="link">Выйти</button></form>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login">Войти</a>
+        }
+    </div>
+</header>
+<main>
+    @if (TempData["Ok"] != null) { <div class="msg ok">@TempData["Ok"]</div> }
+    @if (TempData["Err"] != null) { <div class="msg err">@TempData["Err"]</div> }
+    @RenderBody()
+</main>
+<script src="~/js/tasks.js"></script>
+</body>
+</html>

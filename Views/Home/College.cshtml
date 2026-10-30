@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Колледж";
+    var auth = User.Identity != null && User.Identity.IsAuthenticated;
+}
+<h1>Информационная система колледжа</h1>
+<p>Итоговое приложение (задание 30), собранное из классов заданий 1–29: данные хранятся в SQLite, проверки выполняют доменные классы.</p>
+
+<div class="stats">
+    <div><b>@ViewBag.Students</b><span>студентов</span></div>
+    <div><b>@ViewBag.Teachers</b><span>преподавателей</span></div>
+    <div><b>@ViewBag.Groups</b><span>групп</span></div>
+    <div><b>@ViewBag.Grades</b><span>оценок</span></div>
+</div>
+
+@if (!auth)
+{
+    <p><a class="btn" asp-controller="Account" asp-action="Login">Войти в систему</a></p>
+    <p>Тестовые аккаунты: <b>admin / admin123</b>, <b>teacher / teacher123</b>, <b>student / student123</b>.</p>
+}
+else
+{
+    <div class="cards">
+        <a class="card" asp-controller="Student" asp-action="Index"><span>Студенты</span></a>
+        <a class="card" asp-controller="Teacher" asp-action="Index"><span>Преподаватели</span></a>
+        <a class="card" asp-controller="Group" asp-action="Index"><span>Учебные группы</span></a>
+        <a class="card" asp-controller="Grade" asp-action="Index"><span>Электронный журнал</span></a>
+        <a class="card" asp-controller="Attendance" asp-action="Index"><span>Посещаемость</span></a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="card" asp-controller="Admin" asp-action="Index"><span>Административная панель</span></a>
+        }
+    </div>
+}

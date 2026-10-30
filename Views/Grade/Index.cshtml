@@ -1,0 +1,44 @@
+@model List<StudentRecord>
+@{
+    ViewData["Title"] = "Журнал оценок";
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("Teacher");
+}
+<h1>Электронный журнал оценок</h1>
+@if (canEdit)
+{
+    <form asp-controller="Grade" asp-action="Add" method="post" class="inline">
+        <select name="studentId">
+            @foreach (var s in Model) { <option value="@s.Id">@s.Surname @s.Name (@s.Group?.Title)</option> }
+        </select>
+        <input name="subject" placeholder="Предмет" required />
+        <input name="value" type="number" placeholder="Оценка 2–5" required />
+        <button class="btn">Поставить</button>
+    </form>
+}
+<div class="scroll">
+    <table class="grid">
+        <thead><tr><th>Студент</th><th>Группа</th><th>Оценки</th><th>Средний балл</th></tr></thead>
+        <tbody>
+        @foreach (var s in Model)
+        {
+            var book = new AA_App.Models.GradeBook(s.Grades.Select(g => g.Value));
+            <tr>
+                <td>@s.Surname @s.Name</td>
+                <td>@s.Group?.Title</td>
+                <td class="wrap">
+                    @foreach (var g in s.Grades.OrderBy(x => x.Id))
+                    {
+                        <span class="chip" title="@g.Subject, @g.Date.ToShortDateString()">@g.Subject: <b>@g.Value</b>
+                            @if (canEdit)
+                            {
+                                <form asp-controller="Grade" asp-action="Delete" asp-route-id="@g.Id" method="post" class="tiny"><button class="link danger" title="Удалить">×</button></form>
+                            }
+                        </span>
+                    }
+                </td>
+                <td>@(book.Grades.Count == 0 ? "—" : book.Average.ToString("F2"))</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

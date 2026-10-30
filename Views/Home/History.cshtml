@@ -1,0 +1,29 @@
+@model List<TaskRun>
+@{
+    ViewData["Title"] = "История запусков";
+}
+<h1>История запусков заданий</h1>
+<p>Запуски сохраняются в базе SQLite (файл <code>aa_app.db</code>).</p>
+@if (Model.Count == 0)
+{
+    <p>Пока нет запусков.</p>
+}
+else
+{
+    <div class="scroll">
+        <table class="grid">
+            <thead><tr><th>Время</th><th>Задание</th><th>Строк</th><th>Результат</th></tr></thead>
+            <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                    <td><a asp-controller="Tasks" asp-action="Details" asp-route-id="@r.TaskNumber">@r.TaskNumber. @r.TaskTitle</a></td>
+                    <td>@r.RowsCount</td>
+                    <td class="wrap">@r.Summary</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

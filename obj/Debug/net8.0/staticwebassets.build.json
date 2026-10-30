@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "Hash": "uSHiE3gwICVq1WPltztJxeLe+oyOlE/6a2+5n+vDRCE=",
+  "Source": "AA_App",
+  "BasePath": "_content/AA_App",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "AA_App\\wwwroot",
+      "Source": "AA_App",
+      "ContentRoot": "C:\\Users\\fanat\\Documents\\college\\OOP\\AA_App\\wwwroot\\",
+      "BasePath": "_content/AA_App",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\fanat\\Documents\\college\\OOP\\AA_App\\wwwroot\\css\\site.css",
+      "SourceId": "AA_App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\fanat\\Documents\\college\\OOP\\AA_App\\wwwroot\\",
+      "BasePath": "_content/AA_App",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\Users\\fanat\\Documents\\college\\OOP\\AA_App\\wwwroot\\js\\tasks.js",
+      "SourceId": "AA_App",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\fanat\\Documents\\college\\OOP\\AA_App\\wwwroot\\",
+      "BasePath": "_content/AA_App",
+      "RelativePath": "js/tasks.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\tasks.js"
+    }
+  ]
+}

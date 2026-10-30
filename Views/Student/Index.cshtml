@@ -1,0 +1,36 @@
+@model List<StudentRecord>
+@{
+    ViewData["Title"] = "Студенты";
+    var groups = (List<GroupRecord>)ViewBag.Groups;
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("Teacher");
+}
+<h1>Студенты</h1>
+@if (canEdit)
+{
+    <form asp-controller="Student" asp-action="Add" method="post" class="inline">
+        <input name="name" placeholder="Имя" required />
+        <input name="surname" placeholder="Фамилия" required />
+        <input name="age" type="number" placeholder="Возраст" required />
+        <select name="groupId">
+            @foreach (var g in groups) { <option value="@g.Id">@g.Title</option> }
+        </select>
+        <button class="btn">Добавить</button>
+    </form>
+}
+<div class="scroll">
+    <table class="grid">
+        <thead><tr><th>ID</th><th>Фамилия</th><th>Имя</th><th>Возраст</th><th>Группа</th>@if (User.IsInRole("Admin")) { <th></th> }</tr></thead>
+        <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Id</td><td>@s.Surname</td><td>@s.Name</td><td>@s.Age</td><td>@s.Group?.Title</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td><form asp-controller="Student" asp-action="Delete" asp-route-id="@s.Id" method="post"><button class="link danger">Удалить</button></form></td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

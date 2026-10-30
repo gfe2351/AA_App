@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Вход";
+}
+<h1>Авторизация</h1>
+@if (ViewBag.Error != null) { <div class="msg err">@ViewBag.Error</div> }
+<form asp-controller="Account" asp-action="Login" method="post" class="stack">
+    <label>Логин <input name="login" required autofocus /></label>
+    <label>Пароль <input name="password" type="password" required /></label>
+    <button class="btn">Войти</button>
+</form>
+<p>Тестовые аккаунты: <b>admin / admin123</b>, <b>teacher / teacher123</b>, <b>student / student123</b>.</p>

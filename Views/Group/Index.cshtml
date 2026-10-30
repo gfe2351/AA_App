@@ -1,0 +1,32 @@
+@model List<GroupRecord>
+@{
+    ViewData["Title"] = "Группы";
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("Teacher");
+}
+<h1>Учебные группы</h1>
+@if (canEdit)
+{
+    <form asp-controller="Group" asp-action="Add" method="post" class="inline">
+        <input name="title" placeholder="Название (ИС-21)" required />
+        <input name="course" type="number" placeholder="Курс" required />
+        <button class="btn">Добавить</button>
+    </form>
+}
+<div class="scroll">
+    <table class="grid">
+        <thead><tr><th>Группа</th><th>Курс</th><th>Студентов</th><th>Состав</th>@if (User.IsInRole("Admin")) { <th></th> }</tr></thead>
+        <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.Title</td><td>@g.Course</td><td>@g.Students.Count</td>
+                <td class="wrap">@string.Join(", ", g.Students.Select(s => s.Surname + " " + s.Name))</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td><form asp-controller="Group" asp-action="Delete" asp-route-id="@g.Id" method="post"><button class="link danger">Удалить</button></form></td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

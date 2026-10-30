@@ -1,0 +1,47 @@
+@model List<StudentRecord>
+@{
+    ViewData["Title"] = "Посещаемость";
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("Teacher");
+    var stats = (Dictionary<string, AttendanceStat>)ViewBag.Stats;
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+<h1>Посещаемость</h1>
+@if (canEdit)
+{
+    <form asp-controller="Attendance" asp-action="Mark" method="post" class="inline">
+        <select name="studentId">
+            @foreach (var s in Model) { <option value="@s.Id">@s.Surname @s.Name (@s.Group?.Title)</option> }
+        </select>
+        <input name="date" type="date" value="@today" required />
+        <select name="present">
+            <option value="true">Присутствовал</option>
+            <option value="false">Отсутствовал</option>
+        </select>
+        <button class="btn">Отметить</button>
+    </form>
+}
+<div class="scroll">
+    <table class="grid">
+        <thead><tr><th>Студент</th><th>Группа</th><th>Занятий</th><th>Был</th><th>Посещаемость</th><th>Последние отметки</th></tr></thead>
+        <tbody>
+        @foreach (var s in Model)
+        {
+            var key = s.Id.ToString();
+            stats.TryGetValue(key, out var st);
+            <tr>
+                <td>@s.Surname @s.Name</td>
+                <td>@s.Group?.Title</td>
+                <td>@(st?.Total ?? 0)</td>
+                <td>@(st?.Present ?? 0)</td>
+                <td>@(st == null ? "—" : st.Percent + " %")</td>
+                <td class="wrap">
+                    @foreach (var a in s.Attendance.OrderByDescending(x => x.Date).Take(5))
+                    {
+                        <span class="chip @(a.Present ? "yes" : "no")">@a.Date: @(a.Present ? "был" : "не был")</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,35 @@
+@model List<AppUser>
+@{
+    ViewData["Title"] = "Админ-панель";
+}
+<h1>Административная панель</h1>
+<p>Запусков заданий сохранено в БД: <b>@ViewBag.Runs</b>.</p>
+
+<h2>Новый пользователь</h2>
+<form asp-controller="Admin" asp-action="AddUser" method="post" class="inline">
+    <input name="login" placeholder="Логин" required />
+    <input name="fullName" placeholder="ФИО" required />
+    <input name="password" type="password" placeholder="Пароль (от 6 символов)" required />
+    <select name="role">
+        <option>Admin</option>
+        <option>Teacher</option>
+        <option selected>Student</option>
+    </select>
+    <button class="btn">Создать</button>
+</form>
+
+<h2>Пользователи</h2>
+<div class="scroll">
+    <table class="grid">
+        <thead><tr><th>ID</th><th>Логин</th><th>ФИО</th><th>Роль</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Id</td><td>@u.Login</td><td>@u.FullName</td><td>@u.Role</td>
+                <td><form asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@u.Id" method="post"><button class="link danger">Удалить</button></form></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

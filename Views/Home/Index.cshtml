@@ -1,0 +1,31 @@
+@model IReadOnlyList<TaskDef>
+@{
+    ViewData["Title"] = "Задания";
+}
+<h1>Модификаторы доступа в C#: 30 заданий</h1>
+<p>Выберите задание из списка или нажмите на карточку. На странице задания заполните таблицу и нажмите «Выполнить» — код на C# обработает данные на сервере.</p>
+
+<div class="jump">
+    <label>Быстрый выбор:</label>
+    <select onchange="if (this.value) location.href = '/Tasks/Details/' + this.value">
+        <option value="">— выберите задание —</option>
+        @foreach (var t in Model)
+        {
+            <option value="@t.Number">@t.Number. @t.Title</option>
+        }
+    </select>
+</div>
+
+@foreach (var g in Model.GroupBy(t => t.Section))
+{
+    <h2>@g.Key</h2>
+    <div class="cards">
+        @foreach (var t in g)
+        {
+            <a class="card" asp-controller="Tasks" asp-action="Details" asp-route-id="@t.Number">
+                <b>@t.Number</b>
+                <span>@t.Title</span>
+            </a>
+        }
+    </div>
+}
